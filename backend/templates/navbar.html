@@ -1,0 +1,43 @@
+<!-- navbar.html -->
+<nav>
+  <div class="nav-left">
+    <a href="/">Trang chủ</a>
+    <a href="/products">Sản phẩm</a>
+  </div>
+  <div class="nav-right" id="nav-right">
+    <a href="/signup" id="signup-link">Đăng ký</a>
+    <a href="/login" id="login-link">Đăng nhập</a>
+    <a href="/cart" id="cart-link" style="display: none;">Giỏ hàng</a>
+    <a href="/add-product" id="admin-link" style="display: none;">Thêm sản phẩm</a>
+    <a href="#" id="logout-link" style="display: none;">Đăng xuất</a>
+  </div>
+</nav>
+
+<script>
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+
+      // Ẩn đăng ký/đăng nhập, hiện giỏ hàng và đăng xuất
+      document.getElementById('signup-link').style.display = 'none';
+      document.getElementById('login-link').style.display = 'none';
+      document.getElementById('cart-link').style.display = 'inline-block';
+      document.getElementById('logout-link').style.display = 'inline-block';
+
+      if (payload.role === 'admin') {
+        document.getElementById('admin-link').style.display = 'inline-block';
+      }
+
+      // Gán sự kiện đăng xuất
+      document.getElementById('logout-link').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
+        window.location.href = '/login';
+      });
+
+    } catch (err) {
+      console.error('Token không hợp lệ', err);
+    }
+  }
+</script>
